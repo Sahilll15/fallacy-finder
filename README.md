@@ -40,8 +40,11 @@ npm run dev
 | `TYPESAFE_API_KEY` | one of the two | TypeSafe API key, used when the Gateway is missing or fails |
 | `RATE_LIMIT_ANALYZE` | `5` | checks per IP per window |
 | `RATE_LIMIT_WINDOW_MS` | `3600000` | window length, one hour |
+| `KV_REST_API_URL`, `KV_REST_API_TOKEN` | none | Upstash Redis that holds the rate limit counts |
 
-Input is capped at 12,000 characters and 20 sentences. A line is flagged at 60% or higher and shown as possible from 50%. The rate limiter is in memory, so it is per serverless instance.
+Input is capped at 12,000 characters and 20 sentences. A line is flagged at 60% or higher and shown as possible from 50%.
+
+Rate limit counts are global across instances because they live in Upstash Redis, keyed per app and per IP, with IPv6 grouped by /64. The window starts at your first counted request. Without the Redis variables (local dev, tests) counts fall back to memory, and if Redis is set but unreachable the API answers 503 rather than letting requests through.
 
 ## Related
 

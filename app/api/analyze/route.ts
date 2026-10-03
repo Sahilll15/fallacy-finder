@@ -88,8 +88,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Could not find any sentences to check in that text.' }, { status: 400 });
   }
 
-  const gate = check(req, 'analyze');
-  if (!gate.ok) return tooMany(gate.retryAfter);
+  const gate = await check(req, 'analyze');
+  if (!gate.ok) return tooMany(gate);
 
   try {
     const scored = await Promise.all(claims.map((c) => scoreClaim(c, claims, debate)));
