@@ -123,6 +123,7 @@ export default function Home() {
       <main id="top" className="mx-auto max-w-3xl px-4 pb-24">
         <section className="pt-12 pb-8 sm:pt-20 sm:pb-10">
           <h1 className="animate-rise font-serif text-[40px] leading-[1.05] tracking-tight text-ink sm:text-[64px]">
+            <span className="sr-only">fallacy finder, a logical fallacy checker. </span>
             paste an argument.
             <br />
             <span className="text-ink-faint italic">see where it slips.</span>
