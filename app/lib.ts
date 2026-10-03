@@ -147,6 +147,9 @@ export const FALLACIES: Fallacy[] = [
 
 export const FALLACY_BY_KEY = Object.fromEntries(FALLACIES.map((f) => [f.key, f])) as Record<FallacyKey, Fallacy>;
 
+export const fallacySlug = (f: Pick<Fallacy, 'name'>) => f.name.replace(/\s+/g, '-');
+export const fallacyBySlug = (slug: string) => FALLACIES.find((f) => fallacySlug(f) === slug);
+
 export const STRENGTH = [
   'no argument: an assertion, insult or filler with nothing behind it',
   'weak: a claim with thin or flawed support',

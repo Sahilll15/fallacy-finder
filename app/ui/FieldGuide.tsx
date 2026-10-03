@@ -1,17 +1,18 @@
-import { FALLACIES, type FallacyKey } from '../lib';
+import Link from 'next/link';
+import { FALLACIES, fallacySlug, type FallacyKey } from '../lib';
 import { hueVar } from './bits';
 
 export function FieldGuide({ counts }: { counts: Partial<Record<FallacyKey, number>> | null }) {
   return (
     <ul className="grid gap-3 sm:grid-cols-2">
-      {FALLACIES.map((f, i) => {
+      {FALLACIES.map((f) => {
         const n = counts?.[f.key] ?? 0;
         return (
           <li
             key={f.key}
             id={`guide-${f.key}`}
-            className="animate-rise rounded-[24px] bg-white/35 p-5 ring-1 ring-white/50"
-            style={{ ...hueVar(f.hue), ['--delay' as string]: `${i * 40}ms` }}
+            className="rounded-[24px] bg-white/35 p-5 ring-1 ring-white/50"
+            style={hueVar(f.hue)}
           >
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -34,6 +35,9 @@ export function FieldGuide({ counts }: { counts: Partial<Record<FallacyKey, numb
               {f.example}
             </p>
             <p className="mt-2 text-sm leading-relaxed text-ink-faint">{f.why}</p>
+            <Link href={`/fallacies/${fallacySlug(f)}`} className="mt-3 inline-block text-sm font-medium text-ink underline underline-offset-4">
+              More on {f.name}
+            </Link>
           </li>
         );
       })}
