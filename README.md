@@ -18,6 +18,18 @@ Paste an argument, a reply thread, an op-ed or a debate transcript and fallacy f
 
 A longer recording is in [docs/demo.mp4](docs/demo.mp4).
 
+## Architecture
+
+![fallacy finder architecture: the browser posts an argument to one route handler, which counts the request in Upstash Redis and scores each line with TypeSafe Jev through Vercel AI Gateway, falling back to the direct TypeSafe API](docs/architecture.svg)
+
+1. The browser posts the text and mode to `POST /api/analyze`.
+2. The route splits it into lines, then takes a rate limit slot in Upstash Redis and answers 429 when the window is used up.
+3. It sends each line, with the lines before it as context, to Jev through Vercel AI Gateway (`typesafe-ai/jev`).
+4. Jev answers eight fallacy questions plus factual, evidence and strength questions. If the Gateway fails, the same questions go straight to the TypeSafe API (dashed path).
+5. The route returns the scored lines and the browser draws the thread, claim cards and scoreboard from `app/lib.ts`.
+
+**Why it is built this way.** The TypeSafe and Gateway keys stay on the server. Jev only returns probabilities, and the flag thresholds and scoreboard are computed in code. The limit is counted in Redis before any paid call, so it holds across Vercel instances.
+
 ## Stack
 
 Next.js 16 (App Router), React 19, Tailwind CSS v4, TypeScript and the Vercel AI SDK, deployed on Vercel. Jev calls go through Vercel AI Gateway and fall back to the TypeSafe API. Unit tests use the Node test runner.
